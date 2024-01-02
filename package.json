@@ -1,0 +1,34 @@
+{
+  "name": "somjobs-api",
+  "version": "1.0.0",
+  "description": "API for SomJobs",
+  "main": "src/main.js",
+  "author": "Abdi Zamed Mohamed <abdizamedmo@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaqyaar/som_jobs_api.git"
+  },
+  "scripts": {
+    "start": "node src/main.js",
+    "dev": "nodemon src/main.js",
+    "seed": "node src/providers/seeds/run-seed.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "colors": "^1.4.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.3",
+    "nodemailer": "^6.9.8",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "dotenv": "^16.3.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.0.2"
+  }
+}
