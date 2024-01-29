@@ -68,7 +68,7 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    const isPasswordMatch = comparePassword(password, user.password);
+    const isPasswordMatch = await comparePassword(password, user.password);
 
     if (!isPasswordMatch) {
       return res.status(401).json({
@@ -95,9 +95,9 @@ exports.login = async (req, res, next) => {
       user: user._id,
     });
 
-    res.status(201).json({
+    res.status(200).json({
       status: "success",
-      data: { ...data },
+      data: { ...data, ...rest },
     });
   } catch (error) {
     console.log(error);
@@ -133,7 +133,7 @@ exports.register = async (req, res, next) => {
 
     res.status(201).json({
       status: "success",
-      data: { ...data },
+      data: { ...data, ...rest },
     });
   } catch (error) {
     res.status(500).json({

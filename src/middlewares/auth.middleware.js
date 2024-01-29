@@ -1,4 +1,3 @@
-const { Permission } = require("../models/role.model");
 const { User } = require("../models/user.model");
 const { verifyToken } = require("../utils/helpers");
 
@@ -35,7 +34,7 @@ class AuthMiddleware {
       const user = await User.findOne({
         _id: decoded._id,
         status: "ACTIVE",
-      }).populate("roles");
+      });
 
       if (!user) {
         return res.status(401).json({
@@ -46,7 +45,6 @@ class AuthMiddleware {
 
       req.user = {
         ...user.toObject(),
-        roles: user.roles.map((role) => role._id),
       };
 
       next();
@@ -58,12 +56,11 @@ class AuthMiddleware {
 
   /**
    * This method checks if the user has permission to access a resource
-   * @param {*} action
-   * @param {*} subject
+   * @param {*} requiredRoles
    * @returns {Function} middleware
    * @memberof AuthMiddleware
    */
-  static authorize = (action, subject) => {
+  static authorize = (requiredRoles) => {
     return async (req, res, next) => {
       try {
         if (!req.user) {
@@ -72,30 +69,23 @@ class AuthMiddleware {
             .json({ status: "error", message: "Unauthorized" });
         }
 
-        const userRoles =
-          req.user.roles ||
+        const userRole =
+          req.user.role ||
           (
             await User.findOne({
               _id: req.user.id,
-            }).populate("roles")
-          )
-            .toObject()
-            .roles.map((role) => role._id);
-
-        const permissionChecks = await Promise.all(
-          userRoles?.length > 0 &&
-            userRoles?.map(async (role) => {
-              const permissions = await Permission.find({
-                role,
-                action,
-                subject,
-              });
-
-              return permissions.length > 0;
             })
-        );
+          ).toObject().role;
 
-        if (permissionChecks.some((hasPermission) => hasPermission)) {
+        if (!userRole) {
+          return res
+            .status(401)
+            .json({ status: "error", message: "Unauthorized" });
+        }
+
+        const hasPermission = requiredRoles.includes(userRole);
+
+        if (hasPermission) {
           return next();
         }
 
