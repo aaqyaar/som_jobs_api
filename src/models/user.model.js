@@ -8,7 +8,8 @@ const schema = new Schema(
     name: String,
     password: String,
     photoUrl: String,
-    roles: [{ type: Schema.Types.ObjectId, ref: "Role" }],
+
+    role: { type: String, default: "USER", enum: ["USER", "ADMIN", "EDITOR"] },
     status: {
       type: String,
       enum: ["ACTIVE", "INACTIVE", "BLOCKED"],
