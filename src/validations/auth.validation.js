@@ -1,4 +1,3 @@
-const Subjects = require("../utils/subjects");
 const z = require("zod");
 
 exports.registerSchema = z.object({
@@ -18,14 +17,6 @@ exports.registerSchema = z.object({
   }),
   name: z.string().optional(),
   photoUrl: z.string().url().optional(),
-
-  roles: z
-    .array(
-      z.string({
-        required_error: "Role is required",
-      })
-    )
-    .min(1, "Atleast one role is required"),
 });
 
 exports.loginSchema = z.object({
@@ -41,41 +32,6 @@ exports.loginSchema = z.object({
     .min(6, "Password must be at least 6 characters")
     .max(100, "Password must be less than 100 characters"),
 });
-
-exports.roleSchema = z.object({
-  name: z.string({
-    required_error: "Name is required",
-  }),
-});
-
-exports.permissionSchema = z.object({
-  name: z.string({
-    required_error: "Name is required",
-  }),
-  subject: z.enum([Subjects.User, Subjects.Role, Subjects.Permission]),
-  action: z.enum(["READ", "CREATE", "UPDATE", "DELETE"], {
-    required_error: "Action is required",
-  }),
-  role: z.string({
-    required_error: "Role is required",
-  }),
-});
-
-// convert into array of permissionSchema
-exports.permissionsSchema = z.array(
-  z.object({
-    name: z.string({
-      required_error: "Name is required",
-    }),
-    subject: z.enum([Subjects.User, Subjects.Role, Subjects.Permission]),
-    action: z.enum(["READ", "CREATE", "UPDATE", "DELETE"], {
-      required_error: "Action is required",
-    }),
-    role: z.string({
-      required_error: "Role is required",
-    }),
-  })
-);
 
 exports.forgotPasswordSchema = z.object({
   username: z
